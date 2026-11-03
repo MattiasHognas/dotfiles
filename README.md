@@ -16,7 +16,7 @@ cd ~/Documents/source/dotfiles
 
 Choose **generic** for automatic monitor configuration, or **desktop** for my DP-1 display (2560×1440, 165 Hz, VRR). With `--apps --aur`, setup includes the desktop, everyday applications, and theme packages. Setup installs repository packages, previews configuration changes, saves a recovery snapshot, restores files, and registers Fish commands. Package updates and the restore each retain their normal confirmation prompts.
 
-`--apps` includes the everyday apps, development toolchains, containers, AI clients, creative tools, and gaming utilities selected from this workstation. `--aur` adds VS Code, Aseprite, Spotify/Spicetify, and Catppuccin theme packages. Setup installs `yay` and the build tools through pacman before using AUR; review prompts remain enabled. Omit both flags for the core desktop only. See the [package selection and fresh-install steps](docs/packages.md) for the complete coverage and remaining account/service setup.
+`--apps` includes the everyday apps, development toolchains, containers, AI clients, creative tools, and gaming utilities selected from this workstation. `--aur` adds VS Code, Aseprite, Spotify/Spicetify, and Catppuccin theme packages. Setup installs `yay` and the build tools through pacman before using AUR; review prompts remain enabled. With `--apps`, it also installs missing Haskell tools through GHCup and compatible .NET 10/11 SDKs with the .NET 11 WASM workloads. Omit both flags for the core desktop only. See the [package selection and fresh-install steps](docs/packages.md) for the complete coverage and remaining account/service setup.
 
 ## Everyday use
 
@@ -55,7 +55,8 @@ Full restore installs current versions from Arch/CachyOS/AUR, including Fish and
 | `assets/wallpaper` | The selected background image |
 | `manifest.json` | Exact list of files the scripts manage |
 | `packages/` | Core desktop dependencies and curated application lists, separated by repository/AUR |
-| `scripts/` | Bash commands and a Python 3.11+ standard-library copy engine |
+| `scripts/` | Setup, backup/restore, and Haskell/.NET installers |
+| `toolchains/` | Project-compatible .NET SDK channels and workloads |
 
 Noctalia profiles are complete small TOML files: GUI changes update only the active profile. Shared niri settings are in `configs/niri/config.kdl`; monitor settings are in `profiles/*/outputs.kdl`.
 

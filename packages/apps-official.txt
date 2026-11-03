@@ -18,6 +18,14 @@ rustup
 rust-analyzer
 go
 gopls
+# GHCup runtime/build prerequisites; Haskell tools are installed by install-haskell.sh.
+curl
+gmp
+libffi
+ncurses
+numactl
+xz
+zlib
 cmake
 ninja
 pkgconf

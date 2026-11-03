@@ -28,6 +28,10 @@ class DotfilesTests(unittest.TestCase):
         self.env.pop("NOCTALIA_STATE_HOME", None)
         self.env.pop("NOCTALIA_CONFIG_HOME", None)
         self.env.pop("NIRI_CONFIG", None)
+        self.env["GHCUP_INSTALL_BASE_PREFIX"] = str(self.home)
+        self.env.pop("GHCUP_USE_XDG_DIRS", None)
+        self.env["DOTNET_ROOT"] = str(self.home / ".dotnet")
+        self.env["DOTNET_ROOT_X64"] = str(self.home / ".dotnet")
 
     def command(self, name, *args, ok=True, tty=False):
         argv = [str(self.repo / "scripts" / (name + ".sh")), *args]
@@ -333,6 +337,10 @@ chmod +x "$DOTS_TEST_BIN/yay"
         installer.write_text('#!/bin/sh\n'
                              'test ! -f "$XDG_CONFIG_HOME/niri/config.kdl" || exit 90\n'
                              'printf "%s\\n" "$@" > "$HOME/installer-arguments"\n')
+        for script in ("install-haskell.sh", "install-dotnet.sh"):
+            (self.repo / "scripts" / script).write_text('#!/bin/sh\n'
+                'test -f "$HOME/installer-arguments" || exit 91\n'
+                'test ! -f "$XDG_CONFIG_HOME/niri/config.kdl" || exit 92\n')
         self.command("restore", "--full", "--profile", "desktop", "--yes")
         self.assertEqual((self.home / "installer-arguments").read_text().splitlines(), ["--aur", "--apps"])
         self.assertTrue((self.config / "niri/config.kdl").exists())

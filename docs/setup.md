@@ -9,7 +9,7 @@ Use a fresh CachyOS installation and a normal user account. The setup script ins
 
 `dots-restore --full` performs the same package installation and config restoration as `dots-setup --apps --aur`. Plain restore and snapshot recovery only affect config files. `--full` cannot be combined with `--snapshot`. Package installation must succeed before configs are restored.
 
-`--dry-run` reports package commands and configuration differences without changing the home directory. `--skip-packages` is useful when dependencies are already installed. `--yes` skips only the restore confirmation; it does not disable package review or publishing confirmation.
+`--dry-run` reports package commands and configuration differences without changing the home directory. `--skip-packages` skips packages and Haskell/.NET toolchain installation when dependencies are already installed. `--yes` skips only the restore confirmation; it does not disable package review or publishing confirmation.
 
 On first setup, back up any personal Fish development initialization to `~/.config/fish/local.fish` before replacing `config.fish`. This local file is sourced at the end of the shared config and is never published by backup. Missing managed files are not removed from the repository during backup.
 

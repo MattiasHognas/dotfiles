@@ -44,6 +44,12 @@ if ! $skip_packages; then
     $apps && options+=(--apps)
     $dry_run && options+=(--dry-run)
     "$script_dir/install-packages.sh" "${options[@]}"
+    if $apps; then
+        toolchain_options=()
+        $dry_run && toolchain_options+=(--dry-run)
+        "$script_dir/install-haskell.sh" "${toolchain_options[@]}"
+        "$script_dir/install-dotnet.sh" "${toolchain_options[@]}"
+    fi
 fi
 options=(--profile "$profile")
 $dry_run && options+=(--dry-run)

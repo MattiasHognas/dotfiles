@@ -2,7 +2,7 @@
 
 Initial verification on CachyOS, 2026-11-03:
 
-- 26 isolated tests covering backup/restore, permissions, absent files, profile isolation, private preference handling, wallpaper capture, Fish wrappers, dry-run, symlink refusal, snapshot validation, and a rejected Git push followed by a successful retry.
+- 33 isolated tests covering backup/restore, permissions, absent files, profile isolation, private preference handling, wallpaper capture, Fish wrappers, dry-run, symlink refusal, snapshot validation, and a rejected Git push followed by a successful retry.
 - Bash syntax and ShellCheck pass. Fish scripts parse. Both profiles pass niri 26.04 and Noctalia 5.4.1 validators.
 - A nested niri session with a fresh temporary home rendered Noctalia, the bundled wallpaper, the selected palette, Kitty, and Fuzzel. Screenshot-to-clipboard bytes round-tripped successfully.
 - That smoke test found and fixed the obsolete Fuzzel `icons=yes` setting, the unwanted automatic light theme, and an enabled Hyprland template on a niri desktop.
@@ -14,3 +14,5 @@ A fresh CachyOS VM installation, package-installation prompts, reboot/login, dis
 App restoration adds tests for curated package selection, forwarding full-restore options, installing packages before config changes, and stopping safely on installation failure. Package commands were dry-run only; the existing machine was not upgraded or reinstalled while adding this feature.
 
 The expanded clean-install selection was checked against the configured package databases (134 repository targets) and AUR RPC (8 targets, all available). Pacman print-only dependency resolution succeeded. New tests run the real package installer against fake package tools to verify helper bootstrap ordering, dry-run behavior without a helper, and safe failure if repository installation fails or does not provide the helper. No real package transaction was performed during this update.
+
+Haskell/.NET setup was tested with isolated installer fixtures for fresh bootstrap, repeat runs, dry-run, failure handling, and Fish executable discovery. The existing workstation tools were checked: GHC 9.10.3, Cabal 3.16.1.0, Stack 3.11.1, HLS 2.14.0.0, .NET 10.0.400, .NET 11 RC2, and both WASM workloads. No fresh compiler/SDK download was performed on the host. The current list has 141 repository packages after adding Haskell prerequisites.
