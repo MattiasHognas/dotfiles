@@ -1,4 +1,6 @@
 # Everyday applications; current versions from the enabled Arch/CachyOS repositories.
 blender
+neovim
 steam
+zed
 zen-browser-bin

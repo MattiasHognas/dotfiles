@@ -263,7 +263,7 @@ class DotfilesTests(unittest.TestCase):
         base = self.command("install-packages", "--dry-run").stdout
         self.assertNotIn(" steam", base)
         result = self.command("install-packages", "--apps", "--aur", "--dry-run").stdout
-        for package in ("fish", "niri", "blender", "steam", "zen-browser-bin", "visual-studio-code-bin"):
+        for package in ("fish", "niri", "blender", "neovim", "steam", "zed", "zen-browser-bin", "visual-studio-code-bin"):
             self.assertIn(" " + package, result)
         self.assertEqual(list(self.home.iterdir()), [])
         with (self.repo / "packages/apps-aur.txt").open("a") as stream:
