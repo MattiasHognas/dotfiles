@@ -4,6 +4,7 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 repo=$(dirname -- "$script_dir")
 profile=''
 aur=false
+apps=false
 skip_packages=false
 dry_run=false
 yes=false
@@ -13,11 +14,12 @@ while (($#)); do
             [[ $# -ge 2 && "$2" =~ ^(generic|desktop)$ ]] || { echo 'Expected --profile generic|desktop' >&2; exit 1; }
             profile=$2; shift 2 ;;
         --aur) aur=true; shift ;;
+        --apps) apps=true; shift ;;
         --skip-packages) skip_packages=true; shift ;;
         --dry-run) dry_run=true; shift ;;
         --yes) yes=true; shift ;;
         -h|--help)
-            echo 'Usage: setup.sh [--profile generic|desktop] [--aur] [--skip-packages] [--dry-run] [--yes]'
+            echo 'Usage: setup.sh [--profile generic|desktop] [--apps] [--aur] [--skip-packages] [--dry-run] [--yes]'
             echo 'Installs dependencies, snapshots/restores configs, and registers Fish commands.'
             exit 0 ;;
         *) echo "Unknown option: $1" >&2; exit 1 ;;
@@ -39,6 +41,7 @@ fi
 if ! $skip_packages; then
     options=()
     $aur && options+=(--aur)
+    $apps && options+=(--apps)
     $dry_run && options+=(--dry-run)
     "$script_dir/install-packages.sh" "${options[@]}"
 fi

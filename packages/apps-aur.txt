@@ -1,0 +1,2 @@
+# Everyday applications from the AUR; current versions, built with yay or paru.
+visual-studio-code-bin

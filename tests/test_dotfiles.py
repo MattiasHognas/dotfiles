@@ -253,6 +253,40 @@ class DotfilesTests(unittest.TestCase):
         self.assertIn("icons-enabled=yes", config)
         self.assertNotIn("\nicons=yes", config)
 
+    def test_app_package_selection_and_dry_run(self):
+        tools = self.base / "fake package tools"
+        tools.mkdir()
+        helper = tools / "yay"
+        helper.write_text("#!/bin/sh\nexit 99\n")
+        helper.chmod(0o755)
+        self.env["PATH"] = str(tools) + os.pathsep + self.env["PATH"]
+        base = self.command("install-packages", "--dry-run").stdout
+        self.assertNotIn(" steam", base)
+        result = self.command("install-packages", "--apps", "--aur", "--dry-run").stdout
+        for package in ("fish", "niri", "blender", "steam", "zen-browser-bin", "visual-studio-code-bin"):
+            self.assertIn(" " + package, result)
+        self.assertEqual(list(self.home.iterdir()), [])
+        with (self.repo / "packages/apps-aur.txt").open("a") as stream:
+            stream.write("--invalid-option\n")
+        self.command("install-packages", "--apps", "--dry-run", ok=False)
+
+    def test_full_restore_installs_packages_before_configs(self):
+        installer = self.repo / "scripts/install-packages.sh"
+        installer.write_text('#!/bin/sh\n'
+                             'test ! -f "$XDG_CONFIG_HOME/niri/config.kdl" || exit 90\n'
+                             'printf "%s\\n" "$@" > "$HOME/installer-arguments"\n')
+        self.command("restore", "--full", "--profile", "desktop", "--yes")
+        self.assertEqual((self.home / "installer-arguments").read_text().splitlines(), ["--aur", "--apps"])
+        self.assertTrue((self.config / "niri/config.kdl").exists())
+        self.assertEqual((self.config / "dotfiles/profile").read_text().strip(), "desktop")
+
+    def test_full_restore_refuses_snapshot_and_stops_on_install_failure(self):
+        self.command("restore", "--full", "--snapshot", "latest", ok=False)
+        installer = self.repo / "scripts/install-packages.sh"
+        installer.write_text('#!/bin/sh\nexit 42\n')
+        self.command("restore", "--full", "--profile", "generic", "--yes", ok=False)
+        self.assertFalse((self.config / "niri/config.kdl").exists())
+
     def test_toml_serialization_preserves_nested_values(self):
         spec = importlib.util.spec_from_file_location("dotfiles", SOURCE / "scripts/dotfiles.py")
         module = importlib.util.module_from_spec(spec)

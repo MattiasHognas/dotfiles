@@ -1,0 +1,4 @@
+# Everyday applications; current versions from the enabled Arch/CachyOS repositories.
+blender
+steam
+zen-browser-bin

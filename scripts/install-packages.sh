@@ -3,12 +3,14 @@ set -euo pipefail
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 repo=$(dirname -- "$script_dir")
 aur=false
+apps=false
 dry_run=false
 for arg in "$@"; do
     case "$arg" in
         --aur) aur=true ;;
+        --apps) apps=true ;;
         --dry-run) dry_run=true ;;
-        -h|--help) echo 'Usage: install-packages.sh [--aur] [--dry-run]'; exit 0 ;;
+        -h|--help) echo 'Usage: install-packages.sh [--apps] [--aur] [--dry-run]'; exit 0 ;;
         *) echo "Unknown option: $arg" >&2; exit 1 ;;
     esac
 done
@@ -24,6 +26,10 @@ read_packages() {
 # Capture first so invalid lists propagate an error, rather than hiding it in process substitution.
 official_text=$(read_packages "$repo/packages/official.txt")
 aur_text=$(read_packages "$repo/packages/aur.txt")
+if $apps; then
+    official_text+=$'\n'$(read_packages "$repo/packages/apps-official.txt")
+    aur_text+=$'\n'$(read_packages "$repo/packages/apps-aur.txt")
+fi
 mapfile -t official_packages <<< "$official_text"
 mapfile -t aur_packages <<< "$aur_text"
 helper=''
@@ -38,7 +44,7 @@ if $dry_run; then
     if $aur; then
         printf 'Would run: %s -S --needed' "$helper"; printf ' %q' "${aur_packages[@]}"; printf '\n'
     else
-        echo 'Optional AUR themes skipped; use --aur for the full appearance.'
+        echo 'AUR packages skipped; use --aur to include the listed themes and selected AUR apps.'
     fi
     exit 0
 fi
@@ -54,5 +60,5 @@ sudo pacman -Syu --needed "${official_packages[@]}"
 if $aur; then
     "$helper" -S --needed "${aur_packages[@]}"
 else
-    echo 'Optional AUR themes skipped. For matching colors/cursors: dots-setup --aur'
+    echo 'AUR packages skipped. Use --aur to include the listed themes and selected AUR apps.'
 fi
