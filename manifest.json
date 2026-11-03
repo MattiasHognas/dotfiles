@@ -1,0 +1,77 @@
+[
+  {
+    "path": "niri/config.kdl"
+  },
+  {
+    "path": "niri/noctalia.kdl"
+  },
+  {
+    "path": "kitty/kitty.conf"
+  },
+  {
+    "path": "kitty/themes/noctalia.conf"
+  },
+  {
+    "path": "fuzzel/fuzzel.ini"
+  },
+  {
+    "path": "fish/config.fish"
+  },
+  {
+    "path": "gtk-3.0/settings.ini"
+  },
+  {
+    "path": "gtk-4.0/settings.ini"
+  },
+  {
+    "path": "gtk-4.0/noctalia.css"
+  },
+  {
+    "path": "gtk-4.0/noctalia-extensions.css"
+  },
+  {
+    "path": "qt6ct/qt6ct.conf"
+  },
+  {
+    "path": "qt6ct/colors/noctalia.conf"
+  },
+  {
+    "path": "Kvantum/kvantum.kvconfig"
+  },
+  {
+    "path": "Kvantum/catppuccin-mocha-mauve#/catppuccin-mocha-mauve#.kvconfig"
+  },
+  {
+    "path": "niri/outputs.kdl",
+    "profile": "outputs.kdl"
+  },
+  {
+    "path": "gtk-4.0/gtk.css"
+  },
+  {
+    "path": "gtk-4.0/assets",
+    "link": "/usr/share/themes/catppuccin-mocha-mauve-standard+default/gtk-4.0/assets"
+  },
+  {
+    "path": "gtk-4.0/gtk-dark.css",
+    "link": "/usr/share/themes/catppuccin-mocha-mauve-standard+default/gtk-4.0/gtk-dark.css"
+  },
+  {
+    "path": "fish/functions/dots-setup.fish"
+  },
+  {
+    "path": "fish/functions/dots-backup.fish"
+  },
+  {
+    "path": "fish/functions/dots-restore.fish"
+  },
+  {
+    "path": "noctalia/settings.toml",
+    "root": "state",
+    "profile": "noctalia-settings.toml"
+  },
+  {
+    "path": "dotfiles/wallpaper",
+    "source": "assets/wallpaper"
+  }
+]

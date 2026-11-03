@@ -1,0 +1,50 @@
+input {
+    keyboard {
+        xkb {
+            layout "se"
+        }
+    }
+}
+
+spawn-at-startup "kitty"
+spawn-at-startup "noctalia"
+spawn-at-startup "polkit-kde-authentication-agent-1"
+
+binds {
+    Mod+Return { spawn "kitty"; }
+    Mod+D { spawn "fuzzel"; }
+    Mod+P {
+        spawn "sh" "-c" "slurp | grim -g - - | wl-copy"
+    }
+    Mod+Q { close-window; }
+    Mod+O { toggle-overview; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up    { focus-window-up; }
+    Mod+Down  { focus-window-down; }
+    Mod+F     { fullscreen-window; }
+
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+
+    Mod+Escape { quit; }
+}
+
+include "outputs.kdl"
+
+include "noctalia.kdl"
+
+// Open Steam's main window at full width.
+window-rule {
+    match app-id=r#"^steam$"# title=r#"^Steam$"#
+
+    default-column-width { proportion 1.0; }
+}
+
+// Open Steam games fullscreen.
+window-rule {
+    match app-id=r#"^steam_app_.*$"#
+
+    open-fullscreen true
+}

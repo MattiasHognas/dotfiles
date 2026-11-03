@@ -1,0 +1,22 @@
+# Desktop and config-management dependencies; installed with pacman.
+git
+python
+niri
+noctalia
+kitty
+fish
+cachyos-fish-config
+fuzzel
+grim
+slurp
+wl-clipboard
+polkit-kde-agent
+qt6ct
+kvantum
+papirus-icon-theme
+ttf-jetbrains-mono-nerd
+inter-font
+xdg-desktop-portal-gnome
+xdg-desktop-portal-gtk
+gnome-keyring
+pavucontrol
