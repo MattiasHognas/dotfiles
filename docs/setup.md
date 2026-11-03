@@ -49,6 +49,8 @@ Add one explicit file to `manifest.json` and its repository copy under `configs/
 
 ## Application packages
 
-The desktop list already includes niri, Fish, Noctalia, Kitty, and the launcher. `--apps` adds Blender, Neovim (`neovim`), Steam, Zed (`zed`), Zen Browser (`zen-browser-bin` from CachyOS), and VS Code (`visual-studio-code-bin` from AUR, requiring `--aur`). These install the latest versions available in the configured repositories. Keep Arch/CachyOS repositories and multilib enabled; no historical package versions or downloaded Blender archives are restored.
+The desktop list includes niri, Fish, Noctalia, Kitty, the launcher, X11 support, audio, networking/Bluetooth integration, file browsing, archives, and fonts. `--apps --aur` adds the curated development, creative, productivity, and gaming workstation packages. Repository installation supplies `yay` and `base-devel` before the AUR phase, so there is no separate AUR-helper bootstrap step.
 
-Edit `packages/apps-official.txt` or `packages/apps-aur.txt` to add more apps. Commit package-list edits with normal Git commands; `dots-backup --push` only stages captured configs and the selected wallpaper. The lists are curated and are not automatically replaced with every package on the machine. Installing applications does not restore their accounts, games, projects, extensions, or private app data.
+See [package coverage and fresh-install activation steps](packages.md) for the selection, services, toolchains, and app sign-ins. All packages use the current versions in the configured repositories. Keep Arch/CachyOS repositories and multilib enabled.
+
+Edit `packages/apps-official.txt` or `packages/apps-aur.txt` to change the app selection. Commit package-list edits with normal Git commands; `dots-backup --push` only stages captured configs and the selected wallpaper. The lists are curated and are not automatically replaced with every package on the machine.

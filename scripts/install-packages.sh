@@ -18,6 +18,8 @@ read_packages() {
     local line
     while IFS= read -r line || [[ -n "$line" ]]; do
         line=${line%%#*}
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
         [[ -z "$line" ]] && continue
         [[ "$line" =~ ^[a-z0-9][a-z0-9@._+-]*$ ]] || { echo "Invalid package name: $line" >&2; return 1; }
         printf '%s\n' "$line"
@@ -36,7 +38,7 @@ helper=''
 if $aur; then
     if command -v yay >/dev/null; then helper=yay
     elif command -v paru >/dev/null; then helper=paru
-    else echo 'Install yay or paru manually before using --aur.' >&2; exit 1
+    else helper=yay  # The core repository list installs yay before this is invoked.
     fi
 fi
 if $dry_run; then
@@ -48,7 +50,7 @@ if $dry_run; then
     fi
     exit 0
 fi
-if ! command -v pacman >/dev/null || ! [[ -f /etc/cachyos-release ]] && ! grep -q '^ID=cachyos$' /etc/os-release; then
+if ! command -v pacman >/dev/null || ! grep -Eq '^ID="?cachyos"?$' /etc/os-release; then
     echo 'Package installation targets CachyOS. Use setup --skip-packages elsewhere.' >&2
     exit 1
 fi
@@ -58,6 +60,10 @@ if ((EUID == 0)); then
 fi
 sudo pacman -Syu --needed "${official_packages[@]}"
 if $aur; then
+    if ! command -v "$helper" >/dev/null; then
+        echo "The repository installation did not provide $helper; check that the CachyOS repository is enabled." >&2
+        exit 1
+    fi
     "$helper" -S --needed "${aur_packages[@]}"
 else
     echo 'AUR packages skipped. Use --aur to include the listed themes and selected AUR apps.'

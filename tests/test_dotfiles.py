@@ -242,11 +242,69 @@ class DotfilesTests(unittest.TestCase):
         self.assertIn("credential", result.stderr)
 
     def test_package_lists_and_dry_run(self):
+        with (self.repo / "packages/official.txt").open("a") as stream:
+            stream.write("   \n  # spaced comment\n  curl  # inline comment\n")
         self.command("install-packages", "--dry-run")
         with (self.repo / "packages/official.txt").open("a") as stream:
             stream.write("--malicious-option\n")
         self.command("install-packages", "--dry-run", ok=False)
         self.assertEqual(list(self.home.iterdir()), [])
+
+    def package_install_fixture(self):
+        """Run the real installer with fake package tools and a clean PATH."""
+        tools = self.base / "package tools"
+        tools.mkdir()
+        for tool in ("bash", "dirname", "grep", "chmod"):
+            (tools / tool).symlink_to(shutil.which(tool))
+        os_release = self.base / "os-release"
+        os_release.write_text('ID="cachyos"\n')
+        installer = self.repo / "scripts/install-packages.sh"
+        installer.write_text(installer.read_text().replace("/etc/os-release", str(os_release)))
+        # Quote the fixture path, which deliberately contains spaces.
+        installer.write_text(installer.read_text().replace(str(os_release), '"' + str(os_release) + '"'))
+        (tools / "pacman").write_text("#!/bin/bash\nexit 91\n")
+        (tools / "pacman").chmod(0o755)
+        (tools / "sudo").write_text('''#!/bin/bash
+printf 'repo:%s\\n' "$*" >> "$DOTS_TEST_LOG"
+[[ ${DOTS_TEST_FAIL_REPO:-0} == 1 ]] && exit 42
+[[ ${DOTS_TEST_NO_HELPER:-0} == 1 ]] && exit 0
+printf '#!/bin/bash\\nprintf "aur:%%s\\\\n" "$*" >> "$DOTS_TEST_LOG"\\n' > "$DOTS_TEST_BIN/yay"
+chmod +x "$DOTS_TEST_BIN/yay"
+''')
+        (tools / "sudo").chmod(0o755)
+        self.env["PATH"] = str(tools)
+        self.env["DOTS_TEST_BIN"] = str(tools)
+        self.env["DOTS_TEST_LOG"] = str(self.base / "package-calls")
+        return tools, self.base / "package-calls"
+
+    def test_aur_helper_is_bootstrapped_before_aur_install(self):
+        tools, log = self.package_install_fixture()
+        self.command("install-packages", "--apps", "--aur", "--dry-run")
+        self.assertFalse(log.exists())
+        self.assertFalse((tools / "yay").exists())
+        self.command("install-packages", "--apps", "--aur")
+        calls = log.read_text().splitlines()
+        self.assertEqual(len(calls), 2)
+        self.assertTrue(calls[0].startswith("repo:pacman -Syu --needed "))
+        self.assertIn(" yay ", calls[0])
+        self.assertIn(" base-devel ", calls[0])
+        self.assertTrue(calls[1].startswith("aur:-S --needed "))
+        self.assertIn("visual-studio-code-bin", calls[1])
+        self.assertTrue((tools / "yay").exists())
+
+    def test_aur_install_stops_if_bootstrap_fails(self):
+        tools, log = self.package_install_fixture()
+        self.env["DOTS_TEST_FAIL_REPO"] = "1"
+        self.command("install-packages", "--aur", ok=False)
+        self.assertEqual(len(log.read_text().splitlines()), 1)
+        self.assertFalse((tools / "yay").exists())
+
+    def test_missing_helper_after_install_is_reported(self):
+        _, log = self.package_install_fixture()
+        self.env["DOTS_TEST_NO_HELPER"] = "1"
+        result = self.command("install-packages", "--aur", ok=False)
+        self.assertIn("did not provide yay", result.stderr)
+        self.assertEqual(len(log.read_text().splitlines()), 1)
 
     def test_fuzzel_config_uses_current_icon_setting(self):
         config = (self.repo / "configs/fuzzel/fuzzel.ini").read_text()

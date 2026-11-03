@@ -54,5 +54,5 @@ if ! $dry_run; then
     echo "Setup complete. Checkout: $repo"
     echo 'Open Fish to use dots-setup, dots-backup, and dots-restore.'
     echo 'Choose niri at login. No display manager, login shell, or system service was changed.'
-    echo 'See docs/setup.md for optional themes, portals, and personal Fish settings.'
+    echo 'See docs/packages.md for service activation, toolchains, and app sign-ins on a fresh install.'
 fi

@@ -16,7 +16,7 @@ cd ~/Documents/source/dotfiles
 
 Choose **generic** for automatic monitor configuration, or **desktop** for my DP-1 display (2560×1440, 165 Hz, VRR). With `--apps --aur`, setup includes the desktop, everyday applications, and theme packages. Setup installs repository packages, previews configuration changes, saves a recovery snapshot, restores files, and registers Fish commands. Package updates and the restore each retain their normal confirmation prompts.
 
-`--apps` includes Blender, Neovim, Steam, Zed, Zen Browser, and VS Code. `--aur` includes VS Code and the optional GTK/Kvantum/cursor theme packages, using an existing `yay` or `paru` installation with its normal review prompts. Omit both flags for the core desktop only. Without the optional theme packages, applications may fall back to their default themes.
+`--apps` includes the everyday apps, development toolchains, containers, AI clients, creative tools, and gaming utilities selected from this workstation. `--aur` adds VS Code, Aseprite, Spotify/Spicetify, and Catppuccin theme packages. Setup installs `yay` and the build tools through pacman before using AUR; review prompts remain enabled. Omit both flags for the core desktop only. See the [package selection and fresh-install steps](docs/packages.md) for the complete coverage and remaining account/service setup.
 
 ## Everyday use
 
@@ -43,7 +43,7 @@ dots-restore
 
 Run `dots-backup` and commit your local changes before pulling if you have preferences to keep. If a push fails, the local commit and snapshot remain; fix authentication/connectivity and retry `dots-backup --push` or `git push`.
 
-Full restore installs current versions from Arch/CachyOS/AUR, including Fish and niri. It does not pin old versions or remove other installed packages. The curated app lists are `packages/apps-official.txt` and `packages/apps-aur.txt`; add package names there as needed. Steam requires the multilib repository (normally enabled on CachyOS). Blender is installed from the repository instead of recreating a manually downloaded copy. Browser profiles/sign-ins, Steam games, Blender projects, and VS Code extensions/settings are not part of app installation.
+Full restore installs current versions from Arch/CachyOS/AUR, including Fish and niri. It does not pin old versions or remove other installed packages. The curated app lists are `packages/apps-official.txt` and `packages/apps-aur.txt`; add package names there as needed. Steam requires the multilib repository (normally enabled on CachyOS). Blender is installed from the repository instead of recreating a manually downloaded copy. Browser profiles/sign-ins, Steam games, projects, and editor extensions/settings are not part of app installation. The list explicitly includes X11 application support, audio, networking/Bluetooth tools, file browsing, archives, fonts, and codecs; hardware drivers and kernels remain the CachyOS installer’s responsibility.
 
 ## What's stored
 

@@ -1,2 +1,5 @@
-# Everyday applications from the AUR; current versions, built with yay or paru.
+# Applications not available in the configured Arch/CachyOS repositories
 visual-studio-code-bin
+aseprite
+spotify
+spicetify-cli

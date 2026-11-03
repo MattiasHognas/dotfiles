@@ -1,6 +1,77 @@
-# Everyday applications; current versions from the enabled Arch/CachyOS repositories.
-blender
-neovim
-steam
-zed
+# Browser, editors, notes, office, and sharing
 zen-browser-bin
+neovim
+zed
+obsidian
+libreoffice-fresh
+localsend
+meld
+flatpak
+
+# Development languages, build tools, and editor tooling
+dotnet-sdk
+nodejs
+npm
+pnpm
+corepack
+rustup
+rust-analyzer
+go
+gopls
+cmake
+ninja
+pkgconf
+just
+lazygit
+tmux
+tree-sitter-cli
+shellcheck
+shfmt
+
+# Debugging, profiling, and reverse engineering
+gdb
+lldb
+valgrind
+strace
+hyperfine
+ghidra
+
+# Rootless containers and cross-architecture workloads
+podman
+podman-compose
+podman-desktop
+slirp4netns
+fuse-overlayfs
+qemu-user-static
+qemu-user-static-binfmt
+
+# AI applications and command-line clients
+openai-codex
+claude-code
+claude-desktop
+
+# Art, video, music, documents, and media playback
+blender
+krita
+davinci-resolve
+ardour
+qpwgraph
+calf
+lsp-plugins
+typst
+ffmpeg
+vlc
+vlc-plugins-all
+gst-libav
+gst-plugin-pipewire
+gst-plugins-good
+gst-plugins-bad
+gst-plugins-ugly
+
+# Games, compatibility tools, performance overlay, and game streaming
+steam
+protonup-qt
+mangohud
+gamemode
+wine
+sunshine

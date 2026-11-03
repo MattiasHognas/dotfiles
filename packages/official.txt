@@ -1,22 +1,81 @@
-# Desktop and config-management dependencies; installed with pacman.
+# Setup, package builds, and GitHub authentication
 git
 python
+base-devel
+yay
+github-cli
+
+# niri desktop, screenshots, portals, and X11 application support
 niri
 noctalia
 kitty
 fish
 cachyos-fish-config
+cachyos-rate-mirrors
 fuzzel
 grim
 slurp
 wl-clipboard
+xwayland-satellite
 polkit-kde-agent
+xdg-desktop-portal-gnome
+xdg-desktop-portal-gtk
+xdg-utils
+xdg-user-dirs
+gnome-keyring
+
+# Audio, networking, Bluetooth, brightness, and power integration
+pipewire
+pipewire-audio
+pipewire-alsa
+pipewire-pulse
+wireplumber
+pavucontrol
+networkmanager
+network-manager-applet
+bluez
+bluez-utils
+blueman
+brightnessctl
+power-profiles-daemon
+upower
+
+# GTK/Qt integration and fonts
+qt5ct
 qt6ct
+qt5-wayland
+qt6-wayland
 kvantum
+kde-gtk-config
 papirus-icon-theme
 ttf-jetbrains-mono-nerd
 inter-font
-xdg-desktop-portal-gnome
-xdg-desktop-portal-gtk
-gnome-keyring
-pavucontrol
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+ttf-liberation
+
+# File browsing, removable devices, previews, and archives
+thunar
+thunar-archive-plugin
+gvfs
+gvfs-mtp
+tumbler
+ffmpegthumbnailer
+file-roller
+7zip
+unzip
+zip
+unrar
+
+# Everyday command-line utilities and diagnostics
+btop
+fastfetch
+ripgrep
+fd
+jq
+rsync
+wget
+openssh
+man-db
+man-pages

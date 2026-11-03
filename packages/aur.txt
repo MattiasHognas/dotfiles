@@ -1,4 +1,5 @@
-# Optional theme packages; setup --aur uses an already-installed yay or paru.
+# Catppuccin appearance packages from AUR
 catppuccin-cursors-mocha
 catppuccin-gtk-theme-mocha
 kvantum-theme-catppuccin-git
+papirus-folders-catppuccin-git
