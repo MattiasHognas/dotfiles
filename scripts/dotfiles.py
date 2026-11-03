@@ -400,6 +400,7 @@ class Dotfiles:
 
     def publish(self, paths):
         scan_public_files(paths)
+        scan_with_trufflehog(paths)
         relative = [str(p.relative_to(REPO)) for p in paths]
         if not relative:
             raise ValueError("No captured files to publish")
@@ -425,6 +426,36 @@ class Dotfiles:
             raise ValueError("Could not inspect staged changes")
         # Also retries a previous failed push when there are no new changes.
         run("git", "push", "-u", "origin", "HEAD", cwd=REPO)
+
+
+def scan_with_trufflehog(paths):
+    """Fail closed before publication; never echo scanner output containing secrets."""
+    executable = shutil.which("trufflehog")
+    if not executable:
+        raise ValueError("Publishing requires TruffleHog; install it with yay -S trufflehog-bin. "
+                         "Your local backup is saved.")
+    flags = ["--json", "--no-verification", "--no-update", "--no-ignore-tag",
+             "--results=verified,unverified,unknown,filtered_unverified",
+             "--fail", "--fail-on-scan-errors"]
+    with tempfile.TemporaryDirectory(prefix="dotfiles-secret-scan-") as directory:
+        root = Path(directory)
+        for path in paths:
+            if path.is_file():
+                target = root / path.relative_to(REPO)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(path, target)
+        scans = [("captured files", ["filesystem", str(root)]),
+                 ("Git history", ["git", REPO.as_uri()])]
+        for label, source in scans:
+            print(f"Checking {label} with TruffleHog (credential verification disabled)...", flush=True)
+            result = subprocess.run([executable, *source, *flags], cwd=REPO,
+                                    capture_output=True, check=False)
+            if result.returncode == 183 or result.stdout.strip():
+                raise ValueError(f"TruffleHog reported possible secrets in {label}; publication blocked. "
+                                 "Run TruffleHog locally to inspect the findings. Local backup is saved.")
+            if result.returncode:
+                raise ValueError(f"TruffleHog could not complete the {label} scan "
+                                 f"(exit {result.returncode}); publication blocked. Local backup is saved.")
 
 
 def scan_public_files(paths):

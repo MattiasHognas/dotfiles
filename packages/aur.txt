@@ -3,3 +3,6 @@ catppuccin-cursors-mocha
 catppuccin-gtk-theme-mocha
 kvantum-theme-catppuccin-git
 papirus-folders-catppuccin-git
+
+# Secret scanning before publishing backups
+trufflehog-bin

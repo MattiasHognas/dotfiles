@@ -16,7 +16,7 @@ cd ~/Documents/source/dotfiles
 
 Choose **generic** for automatic monitor configuration, or **desktop** for my DP-1 display (2560×1440, 165 Hz, VRR). With `--apps --aur`, setup includes the desktop, everyday applications, and theme packages. Setup installs repository packages, previews configuration changes, saves a recovery snapshot, restores files, and registers Fish commands. Package updates and the restore each retain their normal confirmation prompts.
 
-`--apps` includes the everyday apps, development toolchains, containers, AI clients, creative tools, and gaming utilities selected from this workstation. `--aur` adds VS Code, Aseprite, Spotify/Spicetify, and Catppuccin theme packages. Setup installs `yay` and the build tools through pacman before using AUR; review prompts remain enabled. With `--apps`, it also installs missing Haskell tools through GHCup and compatible .NET 10/11 SDKs with the .NET 11 WASM workloads. Omit both flags for the core desktop only. See the [package selection and fresh-install steps](docs/packages.md) for the complete coverage and remaining account/service setup.
+`--apps` includes the everyday apps, development toolchains, containers, AI clients, creative tools, and gaming utilities selected from this workstation. `--aur` adds TruffleHog, VS Code, Aseprite, Spotify/Spicetify, and Catppuccin theme packages. Setup installs `yay` and the build tools through pacman before using AUR; review prompts remain enabled. With `--apps`, it also installs missing Haskell tools through GHCup and compatible .NET 10/11 SDKs with the .NET 11 WASM workloads. Omit both flags for the core desktop only. See the [package selection and fresh-install steps](docs/packages.md) for the complete coverage and remaining account/service setup.
 
 ## Everyday use
 
@@ -32,7 +32,7 @@ dots-setup --apps --aur           # Full setup; remembers this machine's profile
 
 Edit configs normally or use Noctalia's settings UI, then run `dots-backup`. It captures the active Noctalia settings and selected default wallpaper (JPEG, PNG, or WebP up to 25 MiB). The image is stored as `assets/wallpaper`; its format is detected from its contents. All monitors use that selected background on restore. Separate per-monitor image collections are not included.
 
-Backup does **not** commit, upload, or pull unless requested. `--push` requires an interactive review and clean Git staging area; it stages only files managed by this checkout. It pushes the current branch, including any earlier local commits. GitHub authentication must already be configured, for example through `gh auth setup-git` or your Git credential manager.
+Backup does **not** commit, upload, or pull unless requested. `--push` requires an interactive review and clean Git staging area; it stages only files managed by this checkout. It pushes the current branch, including any earlier local commits. Before showing the diff, TruffleHog scans the captured files and local Git history. Missing TruffleHog, findings, or scanner errors block publication while preserving the local backup. Scans disable credential verification and automatic updates. Ordinary backups and config-only restores do not require the scanner. Full restore installs `trufflehog-bin` from AUR; no scanner settings or credentials need backing up. GitHub authentication must already be configured, for example through `gh auth setup-git` or your Git credential manager.
 
 To receive changes from GitHub:
 
@@ -75,3 +75,11 @@ See [verification and remaining fresh-install checks](docs/verification.md) for 
 ```
 
 Requires Python 3.11+, Fish, and ShellCheck. Tests use temporary homes and a temporary Git remote. Installed niri and Noctalia binaries also validate the configs. CI checks shell syntax and recovery behavior; full desktop smoke tests require a Wayland session.
+
+To scan the repository history manually (findings may contain secrets, so keep the output private):
+
+```sh
+trufflehog git "file://$PWD" --no-verification --no-update --no-ignore-tag --results=verified,unverified,unknown,filtered_unverified --fail --fail-on-scan-errors
+```
+
+Run this from the checkout. A clean scan reduces risk but does not guarantee that every secret format is detected. Direct `git push` bypasses the backup script's checks.

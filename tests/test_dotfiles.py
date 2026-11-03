@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 import tomllib
 import unittest
+from unittest import mock
 
 SOURCE = Path(__file__).resolve().parents[1]
 
@@ -207,6 +208,12 @@ class DotfilesTests(unittest.TestCase):
         self.assertFalse((self.config / "niri/config.kdl").exists())
 
     def test_push_failure_keeps_commit_and_snapshot_then_retries(self):
+        binary = self.base / "bin"
+        binary.mkdir()
+        scanner = binary / "trufflehog"
+        scanner.write_text("#!/bin/sh\nexit 0\n")
+        scanner.chmod(0o755)
+        self.env["PATH"] = str(binary) + os.pathsep + self.env["PATH"]
         self.install()
         self.git("init", "-b", "main")
         self.git("config", "user.name", "Dotfiles test")
@@ -229,6 +236,40 @@ class DotfilesTests(unittest.TestCase):
         hook.unlink()
         self.command("backup", "--push", tty=True)
         self.assertEqual(self.git("rev-parse", "refs/heads/main", cwd=remote), self.git("rev-parse", "HEAD"))
+
+    def test_trufflehog_checks_capture_and_history_and_fails_closed(self):
+        spec = importlib.util.spec_from_file_location("scan_test", self.repo / "scripts/dotfiles.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        path = self.repo / "configs/kitty/kitty.conf"
+        with mock.patch.object(module.shutil, "which", return_value=None):
+            with self.assertRaisesRegex(ValueError, "requires TruffleHog"):
+                module.scan_with_trufflehog([path])
+        calls = []
+
+        def scanner(argv, **kwargs):
+            calls.append(argv)
+            self.assertIn("--no-verification", argv)
+            self.assertIn("--fail-on-scan-errors", argv)
+            if argv[1] == "filesystem":
+                captured = Path(argv[2]) / path.relative_to(self.repo)
+                self.assertEqual(captured.read_bytes(), path.read_bytes())
+                self.assertFalse((Path(argv[2]) / "README.md").exists())
+            return subprocess.CompletedProcess(argv, 0, b"", b"")
+
+        with mock.patch.object(module.shutil, "which", return_value="trufflehog"):
+            with mock.patch.object(module.subprocess, "run", side_effect=scanner):
+                module.scan_with_trufflehog([path])
+            self.assertEqual([call[1] for call in calls], ["filesystem", "git"])
+            self.assertEqual(calls[1][2], self.repo.as_uri())
+            for code, output in [(183, b"private-value"), (1, b""), (0, b"private-value")]:
+                with self.subTest(code=code, output=output):
+                    result = subprocess.CompletedProcess([], code, output, b"private-error")
+                    with mock.patch.object(module.subprocess, "run", return_value=result):
+                        with self.assertRaisesRegex(ValueError, "publication blocked") as error:
+                            module.scan_with_trufflehog([path])
+                        self.assertNotIn("private-value", str(error.exception))
+                        self.assertNotIn("private-error", str(error.exception))
 
     def test_push_rejects_existing_staged_changes(self):
         self.install()

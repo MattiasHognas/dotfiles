@@ -31,7 +31,7 @@ The package lists use current repository versions. They deliberately select usef
 | Games | Steam, ProtonUp-Qt, MangoHud, GameMode, Wine, Sunshine |
 | Appearance | Catppuccin GTK/Kvantum/cursors and Papirus folder colors, plus the managed theme configs |
 
-`packages/official.txt` is the core desktop. `packages/apps-official.txt` adds the workstation applications. Their `aur.txt` counterparts contain the packages sourced from AUR. The checked list has 141 repository targets and 8 AUR targets, plus the Haskell and .NET toolchain downloads; these numbers exclude automatically resolved dependencies.
+`packages/official.txt` is the core desktop. `packages/apps-official.txt` adds the workstation applications. Their `aur.txt` counterparts contain the packages sourced from AUR. The checked list has 141 repository targets and 9 AUR targets, plus the Haskell and .NET toolchain downloads; these numbers exclude automatically resolved dependencies.
 
 Repository packages are installed first with a full system update. This includes `yay` and `base-devel`, so a clean CachyOS install does not need an AUR helper in advance. An existing `paru` can also be used. AUR package review/build prompts remain interactive. With `--apps`, repository/AUR packages are followed by Haskell and .NET toolchain setup. If any installation fails, config restoration does not proceed. `--skip-packages` skips both packages and toolchain installation.
 
