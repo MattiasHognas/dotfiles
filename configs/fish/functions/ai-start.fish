@@ -14,7 +14,7 @@ function ai-start --description 'Start Strata and ComfyUI'
         mkdir -p "$output_dir"; or return 1
         kitty --detach --hold --title ComfyUI --directory "$comfy_dir" \
                         "$comfy_dir/.venv/bin/python" main.py \
-                        --listen 127.0.0.1 --port 8188 --cache-none \
+                        --listen 127.0.0.1 --port 8188 --cache-none --disable-metadata \
                         --output-directory "$output_dir"
     end
     
