@@ -106,7 +106,7 @@
 ["theme"]
 "builtin" = "Catppuccin"
 "community_palette" = "Catppuccin Mocha Mauve-Lavender"
-"mode" = "dark"
+"mode" = "auto"
 "source" = "community"
 "wallpaper_scheme" = "m3-content"
 
